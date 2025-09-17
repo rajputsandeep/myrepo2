@@ -474,7 +474,7 @@ router.post(
       try {
         await send2FACode({
           to: email,
-          code: `Welcome ${displayName || email}. Your account at ${client.username || client.id} has been created. Temporary password: ${finalPassword}. Please login and reset your password.`,
+          code: `Welcome ${displayName || email}. Your account at ${client.username || client.id} has been created. Temporary password. Please login and reset your password.`,
         });
       } catch (e) {
         console.warn("Failed to send user registration email:", e);
@@ -560,8 +560,6 @@ router.post(
           passwordHash: tempHash, // optional, you had previously
           licenseValidityStartDate: licenseValidityStartDate ? new Date(licenseValidityStartDate) : new Date(),
           licenseValidityEndDate: licenseValidityEndDate ? new Date(licenseValidityEndDate) : new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
-         
-          isActive: false,
         } as any);
 
         const savedClient = await manager.save(client);
@@ -577,7 +575,7 @@ router.post(
           displayName: tenantName,
           mobile: contactPhone || null,
           role: roleSuperuser,
-          isActive: SUSPEND,
+          isActive:false
           // don't include createdAt/updatedAt if your User entity doesn't have those
         } as any);
 
@@ -785,7 +783,7 @@ router.patch(
             }
           }
 
-          out.push({ id: saved.id, type: saved.type, provider: saved.provider, name: saved.name });
+          out.push({  });
         }
 
         // update client's draftUpdatedAt if exists
@@ -968,9 +966,9 @@ router.get(
           gstNo: client.gstNo,
           registrationNo: client.registrationNo,
           panNo: client.panNo,
-          logoUrl: client.logoUrl,
-          licenseValidityStartDate: client.licenseValidityStartDate,
-          licenseValidityEndDate: client.licenseValidityEndDate,
+          // logoUrl: client.logoUrl,
+          // licenseValidityStartDate: client.licenseValidityStartDate,
+          // licenseValidityEndDate: client.licenseValidityEndDate,
           billing,
           integrations: integrationsSummary,
           licenses: licensesSummary,
