@@ -4,7 +4,7 @@ import { AppDataSource } from './dataSource/data-source';
 import { seedRolesOnce } from "./dataSource/roleSeed"
 import { seedSuperAdminOnce } from './dataSource/superAdminSeed';
 import { seedLicenseTypes } from './dataSource/licenseSeed';
-import { seedDefaultDepartments } from './dataSource/departmentSeed';
+// import { seedDefaultDepartments } from './dataSource/departmentSeed';
 (async () => {
   const ds = await AppDataSource.initialize(); 
   console.log('✅ DB connected');
