@@ -632,79 +632,79 @@ router.post(
   }
 );
 
-router.patch(
-  "/clients/:clientId/billing",
-  requireAuth,
-  allowRoles("superadmin"),
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { clientId } = req.params;
-      const body = req.body || {};
+// router.patch(
+//   "/clients/:clientId/billing",
+//   requireAuth,
+//   allowRoles("superadmin"),
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const { clientId } = req.params;
+//       const body = req.body || {};
 
-      const result = await AppDataSource.manager.transaction(async (manager) => {
-        // find client
-        const client = await manager.findOne(Client, { where: { id: clientId } as any });
-        if (!client) throw createError(404, "Client not found");
+//       const result = await AppDataSource.manager.transaction(async (manager) => {
+//         // find client
+//         const client = await manager.findOne(Client, { where: { id: clientId } as any });
+//         if (!client) throw createError(404, "Client not found");
 
-        const billRepo = manager.getRepository(BillingDetail);
+//         const billRepo = manager.getRepository(BillingDetail);
 
-        // findOne returns either BillingDetail | null
-        let billing = await billRepo.findOne({ where: { Client: { id: clientId } as any } });
+//         // findOne returns either BillingDetail | null
+//         let billing = await billRepo.findOne({ where: { Client: { id: clientId } as any } });
 
-        if (!billing) {
-          // create new billing detail
-          billing = billRepo.create({
-            Client: client,
-            ClientId: client.id,
-            billingContactName: body.billingContactName ?? null,
-            billingEmail: body.billingEmail ?? null,
-            billingAddress: body.billingAddress ?? null,
-            billingCycle: body.billingCycle ?? "MONTHLY",
-            billingStartDate: body.billingStartDate ? new Date(body.billingStartDate) : null,
-            billingCurrency: body.billingCurrency ?? "INR",
-            billingMethod: body.billingMethod ?? null,
-            currentPlan: body.currentPlan ?? null,
-            renewalDate: body.renewalDate ? new Date(body.renewalDate) : null,
-            outstandingBalance: typeof body.outstandingBalance !== "undefined" ? String(body.outstandingBalance) : "0.00",
-            lastPaymentDate: body.lastPaymentDate ? new Date(body.lastPaymentDate) : null,
-            paymentStatus: body.paymentStatus ?? "ACTIVE",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          } as any);
-        } else {
-          // update existing billing detail safely
-          billing.billingContactName = body.billingContactName ?? billing.billingContactName;
-          billing.billingEmail = body.billingEmail ?? billing.billingEmail;
-          billing.billingAddress = body.billingAddress ?? billing.billingAddress;
-          billing.billingCycle = body.billingCycle ?? billing.billingCycle;
-          billing.billingStartDate = body.billingStartDate ? new Date(body.billingStartDate) : billing.billingStartDate;
-          billing.billingCurrency = body.billingCurrency ?? billing.billingCurrency;
-          billing.billingMethod = body.billingMethod ?? billing.billingMethod;
-          billing.currentPlan = body.currentPlan ?? billing.currentPlan;
-          billing.renewalDate = body.renewalDate ? new Date(body.renewalDate) : billing.renewalDate;
-          billing.outstandingBalance = typeof body.outstandingBalance !== "undefined" ? String(body.outstandingBalance) : billing.outstandingBalance;
-          billing.lastPaymentDate = body.lastPaymentDate ? new Date(body.lastPaymentDate) : billing.lastPaymentDate;
-          billing.paymentStatus = body.paymentStatus ?? billing.paymentStatus;
-          billing.updatedAt = new Date();
-        }
+//         if (!billing) {
+//           // create new billing detail
+//           billing = billRepo.create({
+//             Client: client,
+//             ClientId: client.id,
+//             billingContactName: body.billingContactName ?? null,
+//             billingEmail: body.billingEmail ?? null,
+//             billingAddress: body.billingAddress ?? null,
+//             billingCycle: body.billingCycle ?? "MONTHLY",
+//             billingStartDate: body.billingStartDate ? new Date(body.billingStartDate) : null,
+//             billingCurrency: body.billingCurrency ?? "INR",
+//             billingMethod: body.billingMethod ?? null,
+//             currentPlan: body.currentPlan ?? null,
+//             renewalDate: body.renewalDate ? new Date(body.renewalDate) : null,
+//             outstandingBalance: typeof body.outstandingBalance !== "undefined" ? String(body.outstandingBalance) : "0.00",
+//             lastPaymentDate: body.lastPaymentDate ? new Date(body.lastPaymentDate) : null,
+//             paymentStatus: body.paymentStatus ?? "ACTIVE",
+//             createdAt: new Date(),
+//             updatedAt: new Date(),
+//           } as any);
+//         } else {
+//           // update existing billing detail safely
+//           billing.billingContactName = body.billingContactName ?? billing.billingContactName;
+//           billing.billingEmail = body.billingEmail ?? billing.billingEmail;
+//           billing.billingAddress = body.billingAddress ?? billing.billingAddress;
+//           billing.billingCycle = body.billingCycle ?? billing.billingCycle;
+//           billing.billingStartDate = body.billingStartDate ? new Date(body.billingStartDate) : billing.billingStartDate;
+//           billing.billingCurrency = body.billingCurrency ?? billing.billingCurrency;
+//           billing.billingMethod = body.billingMethod ?? billing.billingMethod;
+//           billing.currentPlan = body.currentPlan ?? billing.currentPlan;
+//           billing.renewalDate = body.renewalDate ? new Date(body.renewalDate) : billing.renewalDate;
+//           billing.outstandingBalance = typeof body.outstandingBalance !== "undefined" ? String(body.outstandingBalance) : billing.outstandingBalance;
+//           billing.lastPaymentDate = body.lastPaymentDate ? new Date(body.lastPaymentDate) : billing.lastPaymentDate;
+//           billing.paymentStatus = body.paymentStatus ?? billing.paymentStatus;
+//           billing.updatedAt = new Date();
+//         }
 
-        const savedBilling = await billRepo.save(billing);
+//         const savedBilling = await billRepo.save(billing);
 
-        // update client's draftUpdatedAt (if client supports that field)
-        if ("draftUpdatedAt" in client) {
-          (client as any).draftUpdatedAt = new Date();
-          await manager.save(client);
-        }
+//         // update client's draftUpdatedAt (if client supports that field)
+//         if ("draftUpdatedAt" in client) {
+//           (client as any).draftUpdatedAt = new Date();
+//           await manager.save(client);
+//         }
 
-        return savedBilling;
-      });
+//         return savedBilling;
+//       });
 
-      return res.json({ success: true, billing: result });
-    } catch (err) {
-      next(err);
-    }
-  }
-);
+//       return res.json({ success: true, billing: result });
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
 
 router.patch(
   "/clients/:clientId/integrations",
@@ -1109,3 +1109,4 @@ router.get(
 
 
 export default router;
+
