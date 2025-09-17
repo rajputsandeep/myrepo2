@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import authRoutes from './routes/auth';
 import meRoutes from './routes/me';
 import registerRoutes from "./routes/register";
-import license from "./routes/license";
+// import license from "./routes/license";
 import sessionsRouter from "./routes/session"
 import { requireAuth } from './middleware/auth';
 import { allowRoles } from './middleware/roleGuard';
