@@ -13,7 +13,7 @@ import { seedDefaultDepartments } from './dataSource/departmentSeed';
   await seedRolesOnce(ds);
   await seedSuperAdminOnce(ds);
   await seedLicenseTypes();
-  await seedDefaultDepartments(ds)
+  // await seedDefaultDepartments(ds)
   console.log('✅ Roles & SuperAdmin ensured');
 
   // ✅ Start server
