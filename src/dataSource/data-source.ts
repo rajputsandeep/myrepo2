@@ -106,12 +106,17 @@ export const AppDataSource = new DataSource({
  
   synchronize: process.env.NODE_ENV !== "production",
 
-
-
-  // synchronize: true,   // 👈 force enabled for demo
-  logging: !isProd,    // keep logs off in production
+  // helpful for debugging
+  logging: process.env.NODE_ENV !== "production",
  ssl: wantSSL ? { rejectUnauthorized: true } : false,
+  extra: {
+    max: Number(process.env.DB_MAX || 10),
+    connectionTimeoutMillis: Number(process.env.DB_CONN_TIMEOUT || 5000),
+    idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT || 10000),
+    ...(wantSSL ? { ssl: { rejectUnauthorized: true } } : {}),
+  },
 
 });
+
 
 
